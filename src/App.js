@@ -19,8 +19,8 @@ import './App.css';
           <Route path="/details" component={Details}/>
           <Route path="/cart" component={Cart}/>
           <Route component={Default}/>
-          <Modal/>
-      </Switch>  
+      </Switch> 
+      <Modal/> 
      </React.Fragment>
     )
   }

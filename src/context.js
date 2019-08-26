@@ -18,13 +18,13 @@
       };
      
          componentDidMount() {
-           this.setProducts()
+            this.setProducts()
          }
           setProducts = () =>{
           let tempProducts = [];
           storeProducts.forEach(item=>{
             const singleItem = {...item}
-            tempProducts={...tempProducts, singleItem} 
+            tempProducts = [...tempProducts, singleItem] 
           })
           this.setState(()=>{
             return {products:tempProducts}
@@ -36,20 +36,38 @@
        const product = this.state.products.find(item => item.id === id )
        return product
      }
-     handleDetail = () => {
-        console.log("Hello handLEdETAIL")
-
+     handleDetail = id => {
+      const product = this.getItem(id);
+      this.setState(()=>{
+        return {detailProduct:product}
+      })
      }
-     addToCart = () =>{
-       console.log("Hello addToCart")
+     addToCart = id =>{
+      let tempProducts = [...this.state.products]
+       const index = tempProducts.indexOf(this.getItem(id))
+       const product = tempProducts[index]
+       product.inCart = true
+       product.count = 1
+       const price = product.price
+       product.total = price;
+       this.setState( 
+         ()=> {
+         return {products:tempProducts, cart:[...this.state.cart, product]}
+         },() => {
+         this.addTotals()
+       })
     }
-     openModal=id=>{
+    //Test 
+    // tester = () =>{
+    //   console.log("state products :", this.state.products[0].inCart)
+    // }
+     openModal = id =>{
        const product = this.getItem(id)
        this.setState(() => {
             return {modalProduct:product, modalOpen:true}
        })
      }
-     closeModal = id =>{
+     closeModal = () =>{
        this.setState(()=>{
          return {modalOpen:false}
        })
@@ -72,7 +90,7 @@
           }
       )
      };    
-    decrement=id=>{
+    decrement = id =>{
      let tempCart = [...this.state.cart]
       const selectedProduct = tempCart.find(item => item.id === id)
       const index = tempCart.indexOf(selectedProduct)
@@ -87,7 +105,7 @@
         this.setState(
           ()=>{
          return{
-           cart:[tempCart]}
+           cart:[...tempCart]}
           }, 
            ()=>{
              this.addTotals()
@@ -97,7 +115,7 @@
     }
     removeItem=(id)=>{
       let tempProducts = [...this.state.products]
-      let tempCart = [...this.state.Cart]
+      let tempCart = [...this.state.cart]
       tempCart = tempCart.filter(item => item.id !== id)
       const index = tempProducts.indexOf(this.getItem(id))
       let removedProduct = tempProducts[index]
